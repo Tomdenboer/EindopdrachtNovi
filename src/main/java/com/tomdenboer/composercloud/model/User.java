@@ -1,7 +1,5 @@
 package com.tomdenboer.composercloud.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,6 +12,17 @@ public class User {
     @Column
     private String username;
 
+    @Column
+    private String password;
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public long getId() {
         return id;
