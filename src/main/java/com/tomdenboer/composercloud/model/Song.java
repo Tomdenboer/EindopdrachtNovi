@@ -18,6 +18,9 @@ public class Song {
     @Column
     private String location;
 
+    public Song() {
+
+    }
 
     public Song(String artist, String name, String location) {
         this.artist = artist;
