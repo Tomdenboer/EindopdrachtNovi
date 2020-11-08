@@ -1,8 +1,7 @@
 package com.tomdenboer.composercloud.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
@@ -14,6 +13,19 @@ public class User {
     @Column
     private String username;
 
+    @Column
+    private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Song> songs;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public long getId() {
         return id;
