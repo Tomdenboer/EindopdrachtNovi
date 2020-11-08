@@ -15,6 +15,7 @@ public class SongController {
     @Autowired
     private SongService songService;
 
+    /***TODO User moet gekoppeld worden aan song... ***/
     @PostMapping("/")
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
                              @RequestParam("artist") String artist, @RequestParam("name") String name) {
