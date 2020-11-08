@@ -15,13 +15,14 @@ public class SongController {
     @Autowired
     private SongService songService;
 
+    /***TODO User moet gekoppeld worden aan song... ***/
     @PostMapping("/")
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
                              @RequestParam("artist") String artist, @RequestParam("name") String name) {
-        songService.createSong(song, artist, name);
+        long id = songService.createSong(song, artist, name);
 
         redirectAttributes.addFlashAttribute("message", "uploaded " + song.getOriginalFilename());
-        return "redirect:/";
+        return "Successfully uploaded song with id: " + id;
     }
 
 
