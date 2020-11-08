@@ -1,6 +1,7 @@
 package com.tomdenboer.composercloud.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
@@ -15,6 +16,8 @@ public class User {
     @Column
     private String password;
 
+    @OneToMany(mappedBy = "user")
+    private List<Song> songs;
 
     public String getPassword() {
         return password;

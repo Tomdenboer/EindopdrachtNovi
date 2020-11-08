@@ -19,6 +19,7 @@ public class SongController {
     private SongService songService;
 
 
+
     @GetMapping(value = "",
                 produces = "audio/mp3")
     public @ResponseBody byte[] getSong(@RequestParam("artist") String artist, @RequestParam("name") String name) throws IOException {
@@ -26,6 +27,7 @@ public class SongController {
         return songService.getSong(artist, name);
 
     }
+
 
 
     /***TODO User moet gekoppeld worden aan song... ***/
