@@ -18,6 +18,7 @@ public class Song {
     @Column
     private String location;
 
+
     @ManyToOne
     private User user;
 
@@ -28,6 +29,11 @@ public class Song {
 //        this.location = location;
 //        this.user = user;
 //    }
+
+    public Song() {
+
+    }
+
 
     public Song(String artist, String name, String location) {
         this.artist = artist;
