@@ -2,12 +2,14 @@ package com.tomdenboer.composercloud.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
 public class User {
 
     @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
@@ -20,8 +22,14 @@ public class User {
     @Column
     private boolean active;
 
-    @Column
-    private String roles;
+//    @Column
+//    private String roles;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role",
+                joinColumns = @JoinColumn(name = "user_id", nullable = false),
+                inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
+    private Set<Role> userRoles;
 
 //    @OneToMany(mappedBy = "user")
 //    @Column
@@ -30,12 +38,12 @@ public class User {
     public User(){
     }
 
-    public User(long id, String userName, String password, boolean active, String roles, List<Song> songs) {
+    public User(long id, String userName, String password, boolean active, Set<Role> roles, List<Song> songs) {
         this.id = id;
         this.userName = userName;
         this.password = password;
         this.active = active;
-        this.roles = roles;
+        this.userRoles = roles;
 //        this.songs = songs;
     }
 
@@ -71,12 +79,12 @@ public class User {
         this.active = active;
     }
 
-    public String getRoles() {
-        return roles;
+    public Set<Role> getRoles() {
+        return userRoles;
     }
 
-    public void setRole(String role) {
-        this.roles = role;
+    public void setRole(Set<Role> roles) {
+        this.userRoles = roles;
     }
 
 //    public List<Song> getSongs() {
