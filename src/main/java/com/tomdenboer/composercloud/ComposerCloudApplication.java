@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 
 //TODO: ??????
-@EnableJpaRepositories(basePackageClasses = UserRepository.class)
+//@EnableJpaRepositories(basePackageClasses = UserRepository.class)
 
 public class ComposerCloudApplication {
 

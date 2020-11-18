@@ -4,6 +4,7 @@ package com.tomdenboer.composercloud.service;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -15,6 +16,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Collection<User> getAllUsers() {
         return userRepository.findAll();
     }

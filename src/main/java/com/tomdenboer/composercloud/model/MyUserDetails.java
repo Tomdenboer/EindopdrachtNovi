@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MyUserDetails implements UserDetails {
@@ -21,10 +19,13 @@ public class MyUserDetails implements UserDetails {
         this.password = user.getPassword();
         this.active = user.isActive();
 
-        // converts the string 'roles' into a list of type GrantedAuthority
-        this.authorities = Arrays.stream(user.getRoles().split(","))
-                            .map(SimpleGrantedAuthority::new)
-                            .collect(Collectors.toList());
+        // adds all the roles to the list of type GrantedAuthority
+        //TODO: hopefully...
+        Set<Role> r = user.getRoles();
+        this.authorities = new ArrayList<>();
+        for(Role role :user.getRoles()) {
+            this.authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+        }
     }
 
     public MyUserDetails() {
