@@ -11,4 +11,5 @@ public interface UserService {
     public Optional<User> getUserById(long id);
     public long createUser(User user);
     public long deleteUser(long id);
+    public User updateUser(User user, long id);
 }
