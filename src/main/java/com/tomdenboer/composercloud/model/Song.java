@@ -19,8 +19,8 @@ public class Song {
     private String location;
 
 
-    @ManyToOne
-    private User user;
+//    @ManyToOne
+//    private User user;
 
 //    public Song(long id, String artist, String name, String location, User user) {
 //        this.id = id;
@@ -33,7 +33,6 @@ public class Song {
     public Song() {
 
     }
-
 
     public Song(String artist, String name, String location) {
         this.artist = artist;

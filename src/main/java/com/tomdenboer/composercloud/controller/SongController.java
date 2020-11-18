@@ -18,6 +18,10 @@ public class SongController {
     @Autowired
     private SongService songService;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cdad5cd6d26c3e8c1befb35a087d4be1f0d4e690
 
     @GetMapping(value = "",
                 produces = "audio/mp3")
@@ -28,9 +32,14 @@ public class SongController {
     }
 
 
+
     /***TODO User moet gekoppeld worden aan song... ***/
 
+<<<<<<< HEAD
     @PostMapping("/")
+=======
+    @PostMapping("")
+>>>>>>> cdad5cd6d26c3e8c1befb35a087d4be1f0d4e690
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
                              @RequestParam("artist") String artist, @RequestParam("name") String name) {
         long id = songService.createSong(song, artist, name);
