@@ -5,6 +5,7 @@ import com.tomdenboer.composercloud.repository.SongRepository;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 public class SongServiceImpl implements SongService {
 
     @Value("${app.upload.dir:${user.home}}")
@@ -31,12 +33,10 @@ public class SongServiceImpl implements SongService {
     @Autowired
     SongRepository songRepository;
 
-
     public @ResponseBody byte[] getSong(String artist, String name) throws IOException{
         List<Song> list = songRepository.findByArtistAndName(artist, name);
         Song s = list.get(0);
         String location = s.getLocation();
-//        InputStream i = getClass().getResourceAsStream(location);
         InputStream i = new FileInputStream(location);
         return IOUtils.toByteArray(i);
     }
@@ -44,7 +44,6 @@ public class SongServiceImpl implements SongService {
     public long createSong(MultipartFile song, String artist, String name)  {
         Song newSong;
 
-        /* Have to init something here, else it wont work */
         Path copyLocation = Paths.get(uploadDir);
         try {
             copyLocation = Paths
