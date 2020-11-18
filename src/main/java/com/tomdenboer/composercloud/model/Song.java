@@ -18,14 +18,13 @@ public class Song {
     @Column
     private String location;
 
+//    @ManyToOne
+//    private User user;
+
 
     public Song() {
 
     }
-
-    @ManyToOne
-    private User user;
-
 //    public Song(long id, String artist, String name, String location, User user) {
 //        this.id = id;
 //        this.artist = artist;
