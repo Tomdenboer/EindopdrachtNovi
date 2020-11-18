@@ -18,8 +18,6 @@ public class SongController {
     @Autowired
     private SongService songService;
 
-
-
     @GetMapping(value = "",
                 produces = "audio/mp3")
     public @ResponseBody byte[] getSong(@RequestParam("artist") String artist, @RequestParam("name") String name) throws IOException {
@@ -28,11 +26,9 @@ public class SongController {
 
     }
 
-
-
     /***TODO User moet gekoppeld worden aan song... ***/
+    @PostMapping("")
 
-    @PostMapping("/")
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
                              @RequestParam("artist") String artist, @RequestParam("name") String name) {
         long id = songService.createSong(song, artist, name);

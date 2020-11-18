@@ -4,6 +4,8 @@ import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,6 +36,13 @@ public class UserController {
                 .buildAndExpand(newId).toUri();
 
         return ResponseEntity.created(location).body(location);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUser(@RequestBody User user, @PathVariable("id") long id){
+        User newUser = userService.updateUser(user, id);
+
+        return ResponseEntity.ok("updated user " + newUser.getId());
     }
 
     @DeleteMapping("/{id}")

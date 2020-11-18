@@ -19,12 +19,8 @@ public class Song {
     private String location;
 
 
-    public Song() {
-
-    }
-
-    @ManyToOne
-    private User user;
+//    @ManyToOne
+//    private User user;
 
 //    public Song(long id, String artist, String name, String location, User user) {
 //        this.id = id;
@@ -34,6 +30,9 @@ public class Song {
 //        this.user = user;
 //    }
 
+    public Song() {
+
+    }
 
     public Song(String artist, String name, String location) {
         this.artist = artist;
