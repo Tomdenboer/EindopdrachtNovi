@@ -27,13 +27,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       auth.userDetailsService(userDetailsService);
     }
 
-    // TODO: aanpassen ,staan testurls in
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/usertest").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/admintest").hasRole("ADMIN")
                 .and()
                 .httpBasic();
     }

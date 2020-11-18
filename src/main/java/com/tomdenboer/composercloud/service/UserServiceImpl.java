@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
         return newUser.getId();
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     public long deleteUser(long id) {
         userRepository.deleteById(id);
         return id;
