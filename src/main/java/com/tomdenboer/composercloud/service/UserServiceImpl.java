@@ -1,21 +1,27 @@
 package com.tomdenboer.composercloud.service;
 
 
+import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
 
 @Service
+@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Collection<User> getAllUsers() {
@@ -27,11 +33,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public long createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User newUser = userRepository.save(user);
         return newUser.getId();
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public long deleteUser(long id) {
         userRepository.deleteById(id);
         return id;
