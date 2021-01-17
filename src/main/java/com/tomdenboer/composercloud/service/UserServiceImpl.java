@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Service
-@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -23,7 +22,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Collection<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -38,13 +36,11 @@ public class UserServiceImpl implements UserService {
         return newUser.getId();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public long deleteUser(long id) {
         userRepository.deleteById(id);
         return id;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User updateUser(User newUser, long id) {
         Optional<User> user = userRepository.findById(id);
         user.orElseThrow(() -> new UsernameNotFoundException("We konden de gebruiker met de naam " + newUser.getUserName

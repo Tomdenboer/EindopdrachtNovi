@@ -1,5 +1,7 @@
 package com.tomdenboer.composercloud.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,32 +12,20 @@ public class Song {
     private long id;
 
     @Column
-    private String artist;
-
-    @Column
     private String name;
 
     @Column
     private String location;
 
+    @ManyToOne
+    @JsonBackReference
+    private User user;
 
-//    @ManyToOne
-//    private User user;
-
-//    public Song(long id, String artist, String name, String location, User user) {
-//        this.id = id;
-//        this.artist = artist;
-//        this.name = name;
-//        this.location = location;
-//        this.user = user;
-//    }
 
     public Song() {
-
     }
 
-    public Song(String artist, String name, String location) {
-        this.artist = artist;
+    public Song(String name, String location) {
         this.name = name;
         this.location = location;
     }
@@ -46,14 +36,6 @@ public class Song {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getArtist() {
-        return artist;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
     }
 
     public String getName() {
@@ -70,5 +52,13 @@ public class Song {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

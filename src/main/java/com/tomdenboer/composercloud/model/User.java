@@ -10,7 +10,7 @@ public class User {
 
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column()
@@ -29,22 +29,23 @@ public class User {
     @JoinTable(name = "user_role",
                 joinColumns = @JoinColumn(name = "user_id", nullable = false),
                 inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
-    private Set<Role> userRoles;
+    private Set<Role> roles;
 
-//    @OneToMany(mappedBy = "user")
-//    @Column
-//    private List<Song> songs;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column
+    private Set<Song> songs;
 
     public User(){
     }
 
-    public User(long id, String userName, String password, boolean active, Set<Role> roles, List<Song> songs) {
+    public User(long id, String userName, String password, boolean active, Set<Role> roles, Set<Song> songs) {
         this.id = id;
         this.userName = userName;
         this.password = password;
         this.active = active;
-        this.userRoles = roles;
-//        this.songs = songs;
+        this.roles = roles;
+        this.songs = songs;
     }
 
     public String getPassword() {
@@ -80,18 +81,18 @@ public class User {
     }
 
     public Set<Role> getRoles() {
-        return userRoles;
+        return roles;
     }
 
     public void setRole(Set<Role> roles) {
-        this.userRoles = roles;
+        this.roles = roles;
     }
 
-//    public List<Song> getSongs() {
-//        return songs;
-//    }
-//
-//    public void setSongs(List<Song> songs) {
-//        this.songs = songs;
-//    }
+    public Set<Song> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(Set<Song> songs) {
+        this.songs = songs;
+    }
 }
