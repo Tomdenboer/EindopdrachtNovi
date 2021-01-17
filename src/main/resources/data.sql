@@ -1,5 +1,5 @@
-INSERT INTO user (id, user_name, password, active) VALUES (1, 'tom', 'pass', 1);
-INSERT INTO user (id, user_name, password, active) VALUES (2, 'henk', 'pass', 1);
+INSERT INTO user (id, user_name, password, active) VALUES (1, 'tom', '$2a$10$2OylqmFRWSIEneZ4JgpLxOqKqStAHpPilTXEnWBWYSX5FcEaQABQ2', 1);
+INSERT INTO user (id, user_name, password, active) VALUES (2, 'henk', '$2a$10$2OylqmFRWSIEneZ4JgpLxOqKqStAHpPilTXEnWBWYSX5FcEaQABQ2', 1);
 
 INSERT INTO role (id, role_name) VALUES (1, 'ROLE_USER');
 INSERT INTO role (id, role_name) VALUES (2, 'ROLE_ADMIN');
