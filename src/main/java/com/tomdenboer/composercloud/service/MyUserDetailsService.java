@@ -28,7 +28,6 @@ public class MyUserDetailsService implements UserDetailsService {
 
         user.orElseThrow(() ->
                 new UsernameNotFoundException("We konden de gebruiker met de naam " + name + " niet vinden."));
-        user.orElse(null).setPassword(passwordEncoder.encode(user.orElse(null).getPassword()));
 
         return user.map(MyUserDetails::new).get();
     }
