@@ -18,20 +18,25 @@ public class SongController {
     @Autowired
     private SongService songService;
 
-    @GetMapping(value = "",
-                produces = "audio/mp3")
-    public @ResponseBody byte[] getSong(@RequestParam("artist") String artist, @RequestParam("name") String name) throws IOException {
+    @GetMapping("")
+    public ResponseEntity<Object> getAllSongs() {
+        return ResponseEntity.ok().body(songService.getAllSongs());
+    }
 
-        return songService.getSong(artist, name);
+    //TODO: opnieuw
+    @GetMapping(value = "/{id}",
+                produces = "audio/mp3")
+    public @ResponseBody byte[] getSong(@PathVariable("id") long id) throws IOException {
+
+        return songService.getSongById(id);
 
     }
 
     /***TODO User moet gekoppeld worden aan song... ***/
     @PostMapping("")
-
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
-                             @RequestParam("artist") String artist, @RequestParam("name") String name) {
-        long id = songService.createSong(song, artist, name);
+                             @RequestParam("name") String name) {
+        long id = songService.createSong(song, name);
 
         redirectAttributes.addFlashAttribute("message", "uploaded " + song.getOriginalFilename());
         return "Successfully uploaded song with id: " + id;
