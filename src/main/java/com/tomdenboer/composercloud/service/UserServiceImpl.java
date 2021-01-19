@@ -26,9 +26,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    public Optional getUserById(long id) {
+    public Optional<User> getUserById(long id) {
         return userRepository.findById(id);
     }
+
+    public Optional<User> getUserByName(String name){ return userRepository.findByUserName(name);}
 
     public long createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
