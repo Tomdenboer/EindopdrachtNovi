@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 
 @Entity
+@Table
 public class Song {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
@@ -25,9 +27,10 @@ public class Song {
     public Song() {
     }
 
-    public Song(String name, String location) {
+    public Song(String name, String location, User user) {
         this.name = name;
         this.location = location;
+        this.user = user;
     }
 
     public long getId() {

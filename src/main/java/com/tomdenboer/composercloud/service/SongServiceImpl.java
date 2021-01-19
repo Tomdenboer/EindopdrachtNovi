@@ -1,5 +1,6 @@
 package com.tomdenboer.composercloud.service;
 
+import com.tomdenboer.composercloud.model.MyUserDetails;
 import com.tomdenboer.composercloud.model.Song;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.SongRepository;
@@ -8,6 +9,9 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,6 +39,12 @@ public class SongServiceImpl implements SongService {
     @Autowired
     SongRepository songRepository;
 
+    @Autowired
+    MyUserDetailsService userDetailsService;
+
+    @Autowired
+    UserService userService;
+
     public Collection<Song> getAllSongs() {
         return songRepository.findAll();
     }
@@ -51,6 +61,17 @@ public class SongServiceImpl implements SongService {
 
     public long createSong(MultipartFile song, String name)  {
         Song newSong;
+        // TODO: checken of dit goed is (new user)!
+        User user = new User();
+        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       try {
+             user = userService.getUserByName(((UserDetails) o).getUsername()).get();
+        }
+       //TODO: invullen
+       catch (Exception e)  {
+           e.printStackTrace();
+        }
+
         Path copyLocation = Paths.get(uploadDir);
         try {
             copyLocation = Paths
@@ -60,7 +81,7 @@ public class SongServiceImpl implements SongService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        newSong = new Song(name, copyLocation.toString());
+        newSong = new Song(name, copyLocation.toString(), user);
         songRepository.save(newSong);
         return newSong.getId();
     }
