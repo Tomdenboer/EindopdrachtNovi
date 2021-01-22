@@ -6,7 +6,7 @@ import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.tomdenboer.composercloud.exceptions.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,35 +27,57 @@ public class UserServiceImpl implements UserService {
     }
 
     public Optional<User> getUserById(long id) {
-        return userRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException();
+        } else {
+            return optionalUser;
+        }
     }
 
-    public Optional<User> getUserByName(String name){ return userRepository.findByUserName(name);}
+    public Optional<User> getUserByName(String name) {
+        Optional<User> optionalUser = userRepository.findByUserName(name);
+
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException(name);
+        } else {
+            return optionalUser;
+        }
+    }
 
     public long createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User newUser = userRepository.save(user);
-        return newUser.getId();
+        Optional<User> optionalUser = userRepository.findByUserName(user.getUserName());
+
+        if (optionalUser.isPresent() && optionalUser.get().getUserName().equals(user.getUserName())) {
+            throw new UsernameExistsException(user.getUserName());
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User newUser = userRepository.save(user);
+            return newUser.getId();
+        }
     }
 
     public long deleteUser(long id) {
-        userRepository.deleteById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException();
+        } else {
+            userRepository.deleteById(id);
+        }
         return id;
     }
 
     public User updateUser(User newUser, long id) {
-        Optional<User> user = userRepository.findById(id);
-        user.orElseThrow(() -> new UsernameNotFoundException("We konden de gebruiker met de naam " + newUser.getUserName
-                () + " niet vinden."));
+        Optional<User> optionalUser = userRepository.findById(id);
 
-        return user.map(u -> {
-            u.setUserName(newUser.getUserName());
-            return userRepository.save(u);
-        })
-                .orElseGet(() -> {
-                    newUser.setId(id);
-                    return userRepository.save(newUser);
-                });
+        if (optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException();
+        } else {
+            newUser.setId(optionalUser.get().getId());
+            return userRepository.save(newUser);
+        }
     }
 }
 
