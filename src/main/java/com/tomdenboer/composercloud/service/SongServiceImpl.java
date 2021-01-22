@@ -1,5 +1,7 @@
 package com.tomdenboer.composercloud.service;
 
+import com.tomdenboer.composercloud.exceptions.SongNotFoundException;
+import com.tomdenboer.composercloud.exceptions.UsernameNotFoundException;
 import com.tomdenboer.composercloud.model.MyUserDetails;
 import com.tomdenboer.composercloud.model.Song;
 import com.tomdenboer.composercloud.model.User;
@@ -27,6 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,40 +52,42 @@ public class SongServiceImpl implements SongService {
         return songRepository.findAll();
     }
 
-    //TODO: checken for exceptions
-    public @ResponseBody byte[] getSongById(long id) throws IOException{
+    public @ResponseBody
+    byte[] getSongById(long id) throws IOException {
         Optional<Song> optionalSong = songRepository.findById(id);
-        Song song = optionalSong.get();
+        if (optionalSong.isEmpty()) {
+            throw new SongNotFoundException(id);
+        } else {
+            Song song = optionalSong.get();
 
-        String location = song.getLocation();
-        InputStream i = new FileInputStream(location);
-        return IOUtils.toByteArray(i);
+            String location = song.getLocation();
+            InputStream i = new FileInputStream(location);
+            return IOUtils.toByteArray(i);
+        }
     }
 
-    public long createSong(MultipartFile song, String name)  {
+    public long createSong(MultipartFile song, String name) {
         Song newSong;
-        // TODO: checken of dit goed is (new user)!
-        User user = new User();
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       try {
-             user = userService.getUserByName(((UserDetails) o).getUsername()).get();
-        }
-       //TODO: invullen
-       catch (Exception e)  {
-           e.printStackTrace();
-        }
+        Optional<User> optionalUser = userService.getUserByName(((UserDetails) o).getUsername());
 
-        Path copyLocation = Paths.get(uploadDir);
-        try {
-            copyLocation = Paths
-                    .get(uploadDir + File.separator + StringUtils.cleanPath(song.getOriginalFilename()));
-            Files.copy(song.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+        if(optionalUser.isEmpty()) {
+            throw new UsernameNotFoundException();
+        } else {
+            User user = optionalUser.get();
+            Path copyLocation = Paths.get(uploadDir);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                copyLocation = Paths
+                        .get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(song.getOriginalFilename())));
+                Files.copy(song.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            newSong = new Song(name, copyLocation.toString(), user);
+            songRepository.save(newSong);
+            return newSong.getId();
         }
-        newSong = new Song(name, copyLocation.toString(), user);
-        songRepository.save(newSong);
-        return newSong.getId();
     }
 }
