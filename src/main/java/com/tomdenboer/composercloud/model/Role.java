@@ -17,10 +17,7 @@ public class Role {
     @Column
     private String roleName;
 
-
-    public Role() {
-    }
-
+    public Role() {}
 
     public long getId() {
         return id;
