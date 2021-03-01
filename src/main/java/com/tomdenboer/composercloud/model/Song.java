@@ -14,7 +14,10 @@ public class Song {
     private long id;
 
     @Column
-    private String name;
+    private String title;
+
+    @Column
+    String artist;
 
     @Column
     private String location;
@@ -27,11 +30,13 @@ public class Song {
     public Song() {
     }
 
-    public Song(String name, String location, User user) {
-        this.name = name;
+    public Song(String title, String location, User user) {
+        this.title = title;
         this.location = location;
         this.user = user;
+        this.artist = user.getUserName();
     }
+
 
     public long getId() {
         return id;
@@ -41,12 +46,12 @@ public class Song {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
     public String getLocation() {
@@ -64,4 +69,8 @@ public class Song {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public String getArtist() { return artist; }
+
+    public void setArtist(String artist) { this.artist = artist; }
 }
