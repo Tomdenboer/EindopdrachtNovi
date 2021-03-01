@@ -46,6 +46,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @PreAuthorize("permitAll()")
     public long createUser(User user) {
         Optional<User> optionalUser = userRepository.findByUserName(user.getUserName());
 
