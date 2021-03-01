@@ -66,7 +66,7 @@ public class SongServiceImpl implements SongService {
         }
     }
 
-    public long createSong(MultipartFile song, String name) {
+    public long createSong(MultipartFile song, String title) {
         Song newSong;
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userService.getUserByName(((UserDetails) o).getUsername());
@@ -85,7 +85,7 @@ public class SongServiceImpl implements SongService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            newSong = new Song(name, copyLocation.toString(), user);
+            newSong = new Song(title, copyLocation.toString(), user);
             songRepository.save(newSong);
             return newSong.getId();
         }

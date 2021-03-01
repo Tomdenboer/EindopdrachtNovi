@@ -23,7 +23,6 @@ public class SongController {
         return ResponseEntity.ok().body(songService.getAllSongs());
     }
 
-    //TODO: opnieuw
     @GetMapping(value = "/{id}",
                 produces = "audio/mp3")
     public @ResponseBody byte[] getSong(@PathVariable("id") long id) throws IOException {
@@ -35,8 +34,8 @@ public class SongController {
     /***TODO User moet gekoppeld worden aan song... ***/
     @PostMapping("")
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
-                             @RequestParam("name") String name) {
-        long id = songService.createSong(song, name);
+                             @RequestParam("title") String title) {
+        long id = songService.createSong(song, title);
 
         redirectAttributes.addFlashAttribute("message", "uploaded " + song.getOriginalFilename());
         return "Successfully uploaded song with id: " + id;
