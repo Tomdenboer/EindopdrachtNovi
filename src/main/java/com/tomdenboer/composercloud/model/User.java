@@ -22,8 +22,9 @@ public class User {
     @Column
     private boolean active;
 
-//    @Column
-//    private String roles;
+    @Column
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Playlist> playlists;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
@@ -94,5 +95,13 @@ public class User {
 
     public void setSongs(Set<Song> songs) {
         this.songs = songs;
+    }
+
+    public Set<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(Set<Playlist> playlists) {
+        this.playlists = playlists;
     }
 }
