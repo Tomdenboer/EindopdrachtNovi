@@ -51,4 +51,26 @@ public class PlaylistServiceImpl implements PlaylistService{
         Playlist newPlaylist = playlistRepository.save(playlist);
         return newPlaylist.getId();
     }
+
+    public Playlist updatePlaylist(Playlist newPlaylist, long id) {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+
+        if (optionalPlaylist.isEmpty()) {
+            throw new PlaylistNotFoundException();
+        } else {
+            newPlaylist.setId(optionalPlaylist.get().getId());
+            return playlistRepository.save(newPlaylist);
+        }
+    }
+
+    public long deletePlaylist(long id) {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+
+        if (optionalPlaylist.isEmpty()) {
+            throw new PlaylistNotFoundException();
+        } else {
+            playlistRepository.deleteById(id);
+        }
+        return id;
+    }
 }

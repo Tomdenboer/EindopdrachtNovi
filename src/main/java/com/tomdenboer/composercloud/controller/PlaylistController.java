@@ -1,6 +1,7 @@
 package com.tomdenboer.composercloud.controller;
 
 import com.tomdenboer.composercloud.model.Playlist;
+import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.service.PlaylistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,18 @@ public class PlaylistController {
                 .buildAndExpand(newId).toUri();
 
         return ResponseEntity.created(location).body(location);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePlaylist(@RequestBody Playlist playlist, @PathVariable("id") long id){
+        Playlist newPlaylist = playlistService.updatePlaylist(playlist, id);
+
+        return ResponseEntity.ok("updated playlist " + newPlaylist.getId());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deletePlaylist(@PathVariable("id") long id) {
+        playlistService.deletePlaylist(id);
+        return ResponseEntity.noContent().build();
     }
 }
