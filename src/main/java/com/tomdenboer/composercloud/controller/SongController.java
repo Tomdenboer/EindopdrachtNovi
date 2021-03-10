@@ -23,12 +23,9 @@ public class SongController {
         return ResponseEntity.ok().body(songService.getAllSongs());
     }
 
-    @GetMapping(value = "/{id}",
-                produces = "audio/mp3")
+    @GetMapping(value = "/{id}", produces = "audio/mp3")
     public @ResponseBody byte[] getSong(@PathVariable("id") long id) throws IOException {
-
         return songService.getSongById(id);
-
     }
 
     /***TODO User moet gekoppeld worden aan song... ***/

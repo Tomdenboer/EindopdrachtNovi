@@ -6,6 +6,7 @@ import com.tomdenboer.composercloud.model.MyUserDetails;
 import com.tomdenboer.composercloud.model.Song;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.SongRepository;
+import com.tomdenboer.composercloud.util.PrincipalHelper;
 import javassist.NotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,18 +49,22 @@ public class SongServiceImpl implements SongService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private final PrincipalHelper principalHelper;
+
+    public SongServiceImpl() { this.principalHelper = new PrincipalHelper(); }
+
     public Collection<Song> getAllSongs() {
         return songRepository.findAll();
     }
 
-    public @ResponseBody
-    byte[] getSongById(long id) throws IOException {
+    public @ResponseBody byte[] getSongById(long id) throws IOException {
         Optional<Song> optionalSong = songRepository.findById(id);
+
         if (optionalSong.isEmpty()) {
             throw new SongNotFoundException(id);
         } else {
             Song song = optionalSong.get();
-
             String location = song.getLocation();
             InputStream i = new FileInputStream(location);
             return IOUtils.toByteArray(i);
@@ -68,26 +73,18 @@ public class SongServiceImpl implements SongService {
 
     public long createSong(MultipartFile song, String title) {
         Song newSong;
-        Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> optionalUser = userService.getUserByName(((UserDetails) o).getUsername());
+        User user = principalHelper.getCurrentUser();
+        Path copyLocation = Paths.get(uploadDir);
 
-        if(optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException();
-        } else {
-            User user = optionalUser.get();
-            Path copyLocation = Paths.get(uploadDir);
-
-            try {
-                copyLocation = Paths
-                        .get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(song.getOriginalFilename())));
-                Files.copy(song.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            newSong = new Song(title, copyLocation.toString(), user);
-            songRepository.save(newSong);
-            return newSong.getId();
+        try {
+            copyLocation = Paths
+                .get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(song.getOriginalFilename())));
+            Files.copy(song.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        newSong = new Song(title, copyLocation.toString(), user);
+        songRepository.save(newSong);
+        return newSong.getId();
     }
 }
