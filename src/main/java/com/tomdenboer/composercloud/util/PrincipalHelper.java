@@ -1,6 +1,7 @@
 package com.tomdenboer.composercloud.util;
 
 import com.tomdenboer.composercloud.exceptions.UsernameNotFoundException;
+import com.tomdenboer.composercloud.model.Role;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,14 @@ public class PrincipalHelper {
     @Autowired
     private UserService userService;
 
-    public PrincipalHelper(){}
+    public PrincipalHelper() {
+    }
 
     public User getCurrentUser() {
         Object o = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userService.getUserByName(((UserDetails) o).getUsername());
 
-        if(optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             throw new UsernameNotFoundException();
         } else {
             return optionalUser.get();
@@ -38,10 +40,12 @@ public class PrincipalHelper {
         User user = getCurrentUser();
         boolean isAdmin = false;
 
-        for(int i = 0; i < user.getRoles().size(); i ++) {
-            if(user.getRoles().toArray()[i] == "ROLE_ADMIN") {
+        for (Role role : user.getRoles()) {
+            if (role.getRoleName().equals("ROLE_ADMIN")) {
                 isAdmin = true;
+                break;
             }
-        } return isAdmin;
+        }
+        return isAdmin;
     }
 }
