@@ -2,8 +2,10 @@ package com.tomdenboer.composercloud.service;
 
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.UserRepository;
+import com.tomdenboer.composercloud.util.PrincipalHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.tomdenboer.composercloud.exceptions.*;
@@ -22,35 +24,40 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private final PrincipalHelper principalHelper;
+
+    public UserServiceImpl() { this.principalHelper = new PrincipalHelper(); }
+
     public Collection<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     public Optional<User> getUserById(long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> requestedUser = userRepository.findById(id);
 
-        if (optionalUser.isEmpty()) {
+        if (requestedUser.isEmpty()) {
             throw new UsernameNotFoundException();
         } else {
-            return optionalUser;
+            return requestedUser;
         }
     }
 
     public Optional<User> getUserByName(String name) {
-        Optional<User> optionalUser = userRepository.findByUserName(name);
+        Optional<User> requestedUser = userRepository.findByUserName(name);
 
-        if (optionalUser.isEmpty()) {
+        if (requestedUser.isEmpty()) {
             throw new UsernameNotFoundException(name);
         } else {
-            return optionalUser;
+            return requestedUser;
         }
     }
 
     @PreAuthorize("permitAll()")
     public long createUser(User user) {
-        Optional<User> optionalUser = userRepository.findByUserName(user.getUserName());
+        Optional<User> userThatAlreadyExists = userRepository.findByUserName(user.getUserName());
 
-        if (optionalUser.isPresent() && optionalUser.get().getUserName().equals(user.getUserName())) {
+        if (userThatAlreadyExists.isPresent() && userThatAlreadyExists.get().getUserName().equals(user.getUserName())) {
             throw new UsernameExistsException(user.getUserName());
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -59,26 +66,30 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public long deleteUser(long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
+    public User updateUser(User newUser, long id) {
+        Optional<User> userToUpdate = userRepository.findById(id);
 
-        if (optionalUser.isEmpty()) {
+        if (userToUpdate.isEmpty()) {
             throw new UsernameNotFoundException();
+        } else if (!principalHelper.isIdSameAsUserId(userToUpdate.get().getId()) && !principalHelper.isAdmin()) {
+            throw new NotAllowedException();
+        } else {
+            newUser.setId(userToUpdate.get().getId());
+            return userRepository.save(newUser);
+        }
+    }
+
+    public long deleteUser(long id) {
+        Optional<User> userToDelete = userRepository.findById(id);
+
+        if (userToDelete.isEmpty()) {
+            throw new UsernameNotFoundException();
+        } else if (!principalHelper.isIdSameAsUserId(userToDelete.get().getId()) && !principalHelper.isAdmin()) {
+            throw new NotAllowedException();
         } else {
             userRepository.deleteById(id);
         }
         return id;
-    }
-
-    public User updateUser(User newUser, long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException();
-        } else {
-            newUser.setId(optionalUser.get().getId());
-            return userRepository.save(newUser);
-        }
     }
 }
 

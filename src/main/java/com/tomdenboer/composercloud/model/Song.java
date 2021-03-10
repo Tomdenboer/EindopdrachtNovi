@@ -1,8 +1,10 @@
 package com.tomdenboer.composercloud.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table
@@ -26,6 +28,9 @@ public class Song {
     @JsonBackReference
     private User user;
 
+    @ManyToMany(mappedBy = "songs", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Playlist> playlists;
 
     public Song() {
     }
@@ -73,4 +78,12 @@ public class Song {
     public String getArtist() { return artist; }
 
     public void setArtist(String artist) { this.artist = artist; }
+
+    public Set<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(Set<Playlist> playlists) {
+        this.playlists = playlists;
+    }
 }
