@@ -1,5 +1,8 @@
 package com.tomdenboer.composercloud.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
@@ -28,8 +31,8 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
-                joinColumns = @JoinColumn(name = "user_id", nullable = false),
-                inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
+            joinColumns = @JoinColumn(name = "user_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "role_id", nullable = false))
     private Set<Role> roles;
 
 
@@ -37,7 +40,12 @@ public class User {
     @Column
     private Set<Song> songs;
 
-    public User(){
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @Column
+    @JsonIgnore
+    private Set<Comment> comments;
+
+    public User() {
     }
 
     public User(long id, String userName, String password, boolean active, Set<Role> roles, Set<Song> songs) {
@@ -85,6 +93,8 @@ public class User {
         return roles;
     }
 
+    public void setRoles(Set<Role> roles) { this.roles = roles; }
+
     public void setRole(Set<Role> roles) {
         this.roles = roles;
     }
@@ -97,11 +107,11 @@ public class User {
         this.songs = songs;
     }
 
-    public Set<Playlist> getPlaylists() {
-        return playlists;
-    }
+    public Set<Playlist> getPlaylists() { return playlists; }
 
-    public void setPlaylists(Set<Playlist> playlists) {
-        this.playlists = playlists;
-    }
+    public void setPlaylists(Set<Playlist> playlists) { this.playlists = playlists; }
+
+    public Set<Comment> getComments() { return comments; }
+
+    public void setComments(Set<Comment> comments) { this.comments = comments; }
 }
