@@ -28,7 +28,6 @@ public class SongController {
         return songService.getSongById(id);
     }
 
-    /***TODO User moet gekoppeld worden aan song... ***/
     @PostMapping("")
     public String uploadSong(@RequestParam("song") MultipartFile song, RedirectAttributes redirectAttributes,
                              @RequestParam("title") String title) {

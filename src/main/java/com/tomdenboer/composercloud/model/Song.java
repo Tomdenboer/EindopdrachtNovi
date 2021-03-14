@@ -32,6 +32,10 @@ public class Song {
     @JsonIgnore
     private Set<Playlist> playlists;
 
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
+    @Column
+    private Set<Comment> comments;
+
     public Song() {
     }
 
@@ -86,4 +90,8 @@ public class Song {
     public void setPlaylists(Set<Playlist> playlists) {
         this.playlists = playlists;
     }
+
+    public Set<Comment> getComments() { return comments; }
+
+    public void setComments(Set<Comment> comments) { this.comments = comments; }
 }
