@@ -31,10 +31,7 @@ public class CommentController {
     public ResponseEntity<Object> createComment(@RequestBody Comment comment, @PathVariable long id){
         long newId = commentService.createComment(comment, id);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(newId).toUri();
-
-        return ResponseEntity.created(location).body(location);
+        return ResponseEntity.ok().body("Comment met id: "+ newId + " aangemaakt.");
     }
 
 

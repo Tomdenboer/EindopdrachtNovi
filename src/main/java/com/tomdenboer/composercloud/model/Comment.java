@@ -1,6 +1,7 @@
 package com.tomdenboer.composercloud.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -14,11 +15,11 @@ public class Comment {
     private long id;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonIgnore
     private User user;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonIgnore
     private Song song;
 
     @Column

@@ -40,7 +40,7 @@ public class User {
     @Column
     private Set<Song> songs;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @Column
     @JsonIgnore
     private Set<Comment> comments;

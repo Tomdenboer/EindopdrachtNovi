@@ -32,7 +32,7 @@ public class Song {
     @JsonIgnore
     private Set<Playlist> playlists;
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.ALL)
     @Column
     private Set<Comment> comments;
 

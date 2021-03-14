@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.text.html.Option;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -67,8 +64,13 @@ public class SongServiceImpl implements SongService {
         } else {
             Song song = optionalSong.get();
             String location = song.getLocation();
+            try{
             InputStream i = new FileInputStream(location);
             return IOUtils.toByteArray(i);
+
+            } catch (FileNotFoundException e) {
+                throw new SongNotFoundException();
+            }
         }
     }
 
