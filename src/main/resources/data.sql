@@ -14,4 +14,6 @@ INSERT INTO playlist (id, user_id) VALUES (1, 1);
 
 INSERT INTO playlist_song (playlist_id, song_id) VALUES (1, 1);
 
+INSERT INTO comment (id, user_id, song_id, content) VALUES (1, 2, 1, "Wauw, mooi nummer");
+
 # INSERT INTO playlist (id, artist, location, name, user_id) VALUES (1, "tom", "C:\\Users\\tomde\\bensound-creativeminds.mp3", "liedje", 1);

@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -69,6 +70,10 @@ public class SongServiceImpl implements SongService {
             InputStream i = new FileInputStream(location);
             return IOUtils.toByteArray(i);
         }
+    }
+
+    public Optional<Song> getSongDataById(long id) {
+        return songRepository.findById(id);
     }
 
     public long createSong(MultipartFile song, String title) {

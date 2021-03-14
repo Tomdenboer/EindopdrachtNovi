@@ -2,7 +2,6 @@ package com.tomdenboer.composercloud.service;
 
 import com.tomdenboer.composercloud.exceptions.NotAllowedException;
 import com.tomdenboer.composercloud.exceptions.PlaylistNotFoundException;
-import com.tomdenboer.composercloud.exceptions.UsernameNotFoundException;
 import com.tomdenboer.composercloud.model.Playlist;
 import com.tomdenboer.composercloud.model.User;
 import com.tomdenboer.composercloud.repository.PlaylistRepository;
@@ -21,9 +20,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 
     @Autowired
     private PlaylistRepository playlistRepository;
-
-    @Autowired
-    private UserService userService;
 
     public PlaylistServiceImpl() {
         this.principalHelper = new PrincipalHelper();
