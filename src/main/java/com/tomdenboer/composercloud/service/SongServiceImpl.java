@@ -1,5 +1,6 @@
 package com.tomdenboer.composercloud.service;
 
+import com.tomdenboer.composercloud.exceptions.NoFileAttachedException;
 import com.tomdenboer.composercloud.exceptions.SongNotFoundException;
 import com.tomdenboer.composercloud.exceptions.UsernameNotFoundException;
 import com.tomdenboer.composercloud.model.MyUserDetails;
@@ -83,15 +84,19 @@ public class SongServiceImpl implements SongService {
         User user = principalHelper.getCurrentUser();
         Path copyLocation = Paths.get(uploadDir);
 
-        try {
-            copyLocation = Paths
-                .get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(song.getOriginalFilename())));
-            Files.copy(song.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(song.isEmpty()) {
+            throw new NoFileAttachedException();
+        } else {
+            try {
+                copyLocation = Paths
+                        .get(uploadDir + File.separator + StringUtils.cleanPath(Objects.requireNonNull(song.getOriginalFilename())));
+                Files.copy(song.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            newSong = new Song(title, copyLocation.toString(), user);
+            songRepository.save(newSong);
+            return newSong.getId();
         }
-        newSong = new Song(title, copyLocation.toString(), user);
-        songRepository.save(newSong);
-        return newSong.getId();
     }
 }
